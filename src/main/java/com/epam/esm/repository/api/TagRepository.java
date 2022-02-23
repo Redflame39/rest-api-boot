@@ -17,15 +17,6 @@ import java.util.Optional;
 public interface TagRepository<K> {
 
     /**
-     * The constant TAG_MAPPER is used for mapping the ResultSet values to Tag objects.
-     */
-    RowMapper<Tag> TAG_MAPPER = (ResultSet rs, int rowNum) ->
-            Tag.builder()
-                    .id(rs.getLong(TagColumnName.ID))
-                    .name(rs.getString(TagColumnName.NAME))
-                    .build();
-
-    /**
      * Finds all tags.
      *
      * @return the list of all tags.
@@ -46,7 +37,7 @@ public interface TagRepository<K> {
      * @param t the tag to be created
      * @return the id of created tag.
      */
-    K create(TagDto t);
+    Tag create(TagDto t);
 
     /**
      * Delete tag with given id.
@@ -54,7 +45,7 @@ public interface TagRepository<K> {
      * @param deleteId the id of tag to delete.
      * @return true if successfully deleted, else false.
      */
-    boolean delete(K deleteId);
+    Tag delete(K deleteId);
 
     /**
      * Finds certificate by its name.

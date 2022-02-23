@@ -18,20 +18,6 @@ import java.util.Optional;
 public interface CertificateRepository<K> {
 
     /**
-     * The constant CERTIFICATE_MAPPER is used for mapping the ResultSet values to Certificate objects.
-     */
-    RowMapper<Certificate> CERTIFICATE_MAPPER = (ResultSet rs, int rowNum) ->
-            Certificate.builder()
-                    .id(rs.getLong(CertificateColumnName.ID))
-                    .name(rs.getString(CertificateColumnName.NAME))
-                    .description(rs.getString(CertificateColumnName.DESCRIPTION))
-                    .price(rs.getDouble(CertificateColumnName.PRICE))
-                    .duration(rs.getInt(CertificateColumnName.DURATION))
-                    .createDate(rs.getTimestamp(CertificateColumnName.CREATE_DATE))
-                    .lastUpdateDate(rs.getTimestamp(CertificateColumnName.LAST_UPDATE_DATE))
-                    .build();
-
-    /**
      * Finds certificate by its id.
      *
      * @param id the id of certificate to find.
@@ -45,7 +31,7 @@ public interface CertificateRepository<K> {
      * @param certificate the certificate to be created.
      * @return the id of created certificate.
      */
-    K create(UpdatingCertificateDto certificate);
+    Certificate create(UpdatingCertificateDto certificate);
 
     /**
      * Update certificate with given id. Updates only fields which is set to non-null in {@code UpdatingCertificateDto}.
@@ -54,7 +40,7 @@ public interface CertificateRepository<K> {
      * @param replacement the object that contains fields to update.
      * @return true if successfully updated, else false.
      */
-    boolean update(K updateId, UpdatingCertificateDto replacement);
+    Certificate update(K updateId, UpdatingCertificateDto replacement);
 
     /**
      * Deletes certificate with given id.
@@ -62,7 +48,7 @@ public interface CertificateRepository<K> {
      * @param deleteId the id of certificate to delete.
      * @return true if successfully deleted, else false.
      */
-    boolean delete(K deleteId);
+    Certificate delete(K deleteId);
 
     /**
      * Finds certificates by {@code Specification} query.

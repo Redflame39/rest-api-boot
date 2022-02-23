@@ -1,13 +1,19 @@
 package com.epam.esm.configuration;
 
+import com.epam.esm.converter.CertificateToCertificateDtoConverter;
+import com.epam.esm.converter.TagDtoToTagConverter;
+import com.epam.esm.converter.TagToTagDtoConverter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.*;
+import org.springframework.context.support.ConversionServiceFactoryBean;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
+import org.springframework.core.convert.converter.Converter;
+import org.springframework.format.FormatterRegistry;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.bind.annotation.InitBinder;
@@ -17,7 +23,10 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.web.bind.WebDataBinder;
 
+import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
+import java.util.HashSet;
+import java.util.Set;
 
 @Configuration
 @ComponentScan("com.epam.esm")
@@ -77,16 +86,35 @@ public class WebConfig implements WebMvcConfigurer {
         return new PropertySourcesPlaceholderConfigurer();
     }
 
-    @InitBinder
-    public void initBinder(WebDataBinder binder) {
-        binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
+    @Bean
+    public PlatformTransactionManager transactionManager(EntityManagerFactory entityManagerFactory) {
+        JpaTransactionManager jpaTransactionManager = new JpaTransactionManager();
+        jpaTransactionManager.setEntityManagerFactory(entityManagerFactory);
+        return jpaTransactionManager;
     }
 
     @Bean
-    public PlatformTransactionManager transactionManager() {
-        DataSourceTransactionManager dataSourceTransactionManager = new DataSourceTransactionManager();
-        dataSourceTransactionManager.setDataSource(dataSource());
-        return dataSourceTransactionManager;
+    public ConversionServiceFactoryBean conversionService() {
+        ConversionServiceFactoryBean conversionServiceFactoryBean = new ConversionServiceFactoryBean();
+        Set<Converter<?, ?>> converters = new HashSet<>();
+        converters.add(new CertificateToCertificateDtoConverter());
+        converters.add(new TagDtoToTagConverter());
+        converters.add(new TagToTagDtoConverter());
+        conversionServiceFactoryBean.setConverters(converters);
+        conversionServiceFactoryBean.afterPropertiesSet();
+        return conversionServiceFactoryBean;
+    }
+
+    @Override
+    public void addFormatters(FormatterRegistry registry) {
+        registry.addConverter(new CertificateToCertificateDtoConverter());
+        registry.addConverter(new TagDtoToTagConverter());
+        registry.addConverter(new TagToTagDtoConverter());
+    }
+
+    @InitBinder
+    public void initBinder(WebDataBinder binder) {
+        binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
     }
 
 }

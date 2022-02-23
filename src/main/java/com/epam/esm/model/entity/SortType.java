@@ -18,7 +18,7 @@ public enum SortType {
 
     private final String sql;
 
-    public static SortType parseSortType(String sortType) {
+    public static SortType parseSortType(String sortType) { // TODO create string to enum converter
         return Stream.of(values())
                 .filter(title -> title.getSql().equalsIgnoreCase(sortType))
                 .findFirst().orElse(NONE);

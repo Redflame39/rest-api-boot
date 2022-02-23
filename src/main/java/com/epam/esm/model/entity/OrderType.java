@@ -18,7 +18,7 @@ public enum OrderType {
     private final String value;
 
     @JsonCreator
-    public static OrderType parseOrderType(String orderType) {
+    public static OrderType parseOrderType(String orderType) { // TODO create string to enum converter
         return Stream.of(values())
                 .filter(title -> title.getValue().equalsIgnoreCase(orderType))
                 .findFirst().orElse(ASC);

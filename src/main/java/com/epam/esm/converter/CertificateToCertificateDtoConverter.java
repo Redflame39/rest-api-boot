@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
-public class CertificateToCertificateDtoConverter implements Converter<Certificate, CertificateDto> {
+public class CertificateToCertificateDtoConverter implements Converter<Certificate, CertificateDto> { // TODO add converter to formatters
 
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("uuuu-MM-dd'T'HH:mm:ss.SSS");
 

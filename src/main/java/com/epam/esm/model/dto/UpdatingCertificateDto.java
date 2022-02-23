@@ -2,7 +2,7 @@ package com.epam.esm.model.dto;
 
 import lombok.*;
 
-import java.util.List;
+import java.util.Set;
 
 @Data
 @AllArgsConstructor
@@ -19,6 +19,6 @@ public class UpdatingCertificateDto {
 
     String description;
 
-    List<TagDto> tags;
+    Set<TagDto> tags;
 
 }
