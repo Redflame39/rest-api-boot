@@ -5,6 +5,7 @@ import com.epam.esm.repository.TagColumnName;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.Set;
 
 @NoArgsConstructor
@@ -23,11 +24,10 @@ public class Tag {
     @Setter
     private String name;
 
-    @ManyToMany(mappedBy = "tags",
-            cascade = CascadeType.ALL)
+    @ManyToMany(mappedBy = "tags")
     @Getter
     @Setter
-    private Set<Certificate> certificates;
+    private Set<Certificate> certificates = new HashSet<>();
 
     @Override
     public boolean equals(Object o) {

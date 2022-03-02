@@ -1,53 +1,65 @@
 package com.epam.esm.controller;
 
-import com.epam.esm.model.dto.CreatingUserDto;
-import com.epam.esm.model.entity.User;
-import com.epam.esm.repository.api.UserRepository;
+import com.epam.esm.model.dto.OrderDto;
+import com.epam.esm.model.dto.UpdatingUserDto;
+import com.epam.esm.model.dto.UserDto;
+import com.epam.esm.service.api.OrderService;
+import com.epam.esm.service.api.UserService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/users")
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class UserController {
 
-    private final UserRepository<Long> userRepository; // FIXME temporary for development purposes
-
-    @Autowired
-    public UserController(UserRepository<Long> userRepository) {
-        this.userRepository = userRepository;
-    }
+    private final UserService userService;
+    private final OrderService orderService;
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<User> read() {
-        return userRepository.findAll();
+    public List<UserDto> read() {
+        return userService.findAll();
     }
 
     @GetMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public User read(@PathVariable Long id) {
-        return userRepository.findById(id).get();
+    public UserDto read(@PathVariable Long id) {
+        return userService.findById(id);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public User create(@RequestBody CreatingUserDto user) { // FIXME return userDto
-        return userRepository.create(user);
+    public UserDto create(@RequestBody UpdatingUserDto user) {
+        return userService.create(user);
     }
 
     @PutMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.CREATED)
-    public User update(@PathVariable Long id, @RequestBody CreatingUserDto user) { // FIXME return userDto
-        return userRepository.update(id, user);
+    public UserDto update(@PathVariable Long id, @RequestBody UpdatingUserDto user) {
+        return userService.update(id, user);
     }
 
     @DeleteMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.CREATED)
-    public User update(@PathVariable Long id) { // FIXME return userDto
-        return userRepository.delete(id);
+    public UserDto update(@PathVariable Long id) {
+        return userService.delete(id);
     }
+
+    @PostMapping(value = "/{id}/orders")
+    @ResponseStatus(HttpStatus.CREATED)
+    public OrderDto createOrder(@PathVariable Long id, @RequestBody List<Long> certificatesIds) {
+        return orderService.create(id, certificatesIds);
+    }
+
+    @GetMapping(value = "/{id}/orders")
+    @ResponseStatus(HttpStatus.OK)
+    public List<OrderDto> readOrders(@PathVariable Long id) {
+        return orderService.findByUserId(id);
+    }
+
 }

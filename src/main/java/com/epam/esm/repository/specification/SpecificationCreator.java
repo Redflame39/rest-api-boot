@@ -1,51 +1,40 @@
 package com.epam.esm.repository.specification;
 
-import com.epam.esm.model.entity.OrderType;
-import com.epam.esm.model.entity.SortType;
-import com.epam.esm.repository.Specification;
+import com.epam.esm.model.dto.CertificatesQueryDto;
+import com.epam.esm.model.dto.TagDto;
+import com.epam.esm.model.entity.Certificate;
+import com.epam.esm.repository.CriteriaSpecification;
+import lombok.var;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
-/**
- * The class SpecificationCreator is responsible for creating complex Specification to find Certificates
- * by multiple optional params.
- */
 @Component
 public class SpecificationCreator {
 
-    /**
-     * Creates specification by given params.
-     *
-     * @param name        the part of the certificate's name.
-     * @param description the part of the certificate's description.
-     * @param tag         the tag name which certificate should contain.
-     * @param sort        the sort type of result certificates list.
-     * @param order       the order type of result certificates list.
-     * @return complex specification for querying certificates by multiple optional parameters.
-     */
-    public Specification createSpecification(String name, String description, String tag,
-                                             SortType sort, OrderType order) {
-        List<Specification> specifications = new ArrayList<>();
-        if (name != null) {
-            Specification specification = new CertificatesByNamePartSpecification(name);
-            specifications.add(specification);
+    public CriteriaSpecification<Certificate> createCertificateSpecification(CertificatesQueryDto certificatesQueryDto) {
+        if (certificatesQueryDto == null) {
+            return new CertificatesQuerySpecification(Collections.emptyList());
         }
-        if (description != null) {
-            Specification specification = new CertificatesByDescriptionPartSpecification(description);
-            specifications.add(specification);
+        List<CriteriaSpecification<Certificate>> certificatesSpecifications = new ArrayList<>();
+        List<TagDto> tags = certificatesQueryDto.getTags();
+        if (certificatesQueryDto.getTags() != null && !certificatesQueryDto.getTags().isEmpty()) {
+            var certificatesByTagsSpecification = new CertificatesBySeveralTagsSpecification(TagDto.toTagList(tags));
+            certificatesSpecifications.add(certificatesByTagsSpecification);
         }
-        if (tag != null) {
-            Specification specification = new CertificatesByTagNameSpecification(tag);
-            specifications.add(specification);
+        String namePart = certificatesQueryDto.getNamePart();
+        if (namePart != null && !namePart.trim().isEmpty()) {
+            var certificatesByNamePartSpecification = new CertificatesByNamePartSpecification(namePart);
+            certificatesSpecifications.add(certificatesByNamePartSpecification);
         }
-        Specification sortSpecification = new CertificatesSortSpecification(sort);
-        specifications.add(sortSpecification);
-        if (sort != SortType.NONE) {
-            Specification orderSpecification = new CertificatesOrderSpecification(order);
-            specifications.add(orderSpecification);
+        String descriptionPart = certificatesQueryDto.getDescriptionPart();
+        if (descriptionPart != null && !descriptionPart.trim().isEmpty()) {
+            var certificatesByDescriptionPartSpecification = new CertificatesByDescriptionPartSpecification(descriptionPart);
+            certificatesSpecifications.add(certificatesByDescriptionPartSpecification);
         }
-        return new CertificatesCombinedSpecification(specifications);
+        return new CertificatesQuerySpecification(certificatesSpecifications);
     }
+
 }

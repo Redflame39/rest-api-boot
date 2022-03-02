@@ -1,12 +1,8 @@
 package com.epam.esm.repository.api;
 
-import com.epam.esm.repository.CertificateColumnName;
-import com.epam.esm.model.dto.UpdatingCertificateDto;
 import com.epam.esm.model.entity.Certificate;
-import com.epam.esm.repository.Specification;
-import org.springframework.jdbc.core.RowMapper;
+import com.epam.esm.repository.CriteriaSpecification;
 
-import java.sql.ResultSet;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,6 +12,8 @@ import java.util.Optional;
  * @param <K> the identification type of Certificate entity.
  */
 public interface CertificateRepository<K> {
+
+    List<Certificate> findAll(CriteriaSpecification<Certificate> criteriaSpecification);
 
     /**
      * Finds certificate by its id.
@@ -31,7 +29,7 @@ public interface CertificateRepository<K> {
      * @param certificate the certificate to be created.
      * @return the id of created certificate.
      */
-    Certificate create(UpdatingCertificateDto certificate);
+    Certificate create(Certificate certificate);
 
     /**
      * Update certificate with given id. Updates only fields which is set to non-null in {@code UpdatingCertificateDto}.
@@ -40,7 +38,9 @@ public interface CertificateRepository<K> {
      * @param replacement the object that contains fields to update.
      * @return true if successfully updated, else false.
      */
-    Certificate update(K updateId, UpdatingCertificateDto replacement);
+    Certificate update(K updateId, Certificate replacement);
+
+    Certificate updatePrice(K updateId, Double price);
 
     /**
      * Deletes certificate with given id.
@@ -49,12 +49,4 @@ public interface CertificateRepository<K> {
      * @return true if successfully deleted, else false.
      */
     Certificate delete(K deleteId);
-
-    /**
-     * Finds certificates by {@code Specification} query.
-     *
-     * @param specification the specification which describes search criteria.
-     * @return the list of found certificates.
-     */
-    List<Certificate> findBySpecification(Specification specification);
 }

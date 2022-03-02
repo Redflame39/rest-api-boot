@@ -1,7 +1,9 @@
 package com.epam.esm.service.api;
 
 import com.epam.esm.model.dto.CertificateDto;
+import com.epam.esm.model.dto.CertificatesQueryDto;
 import com.epam.esm.model.dto.UpdatingCertificateDto;
+import com.epam.esm.model.entity.Certificate;
 import com.epam.esm.model.entity.OrderType;
 import com.epam.esm.model.entity.SortType;
 
@@ -21,17 +23,7 @@ public interface CertificateService {
      */
     CertificateDto create(UpdatingCertificateDto certificate);
 
-    /**
-     * Finds all certificates by optional query params and returns list of CertificateDto.
-     *
-     * @param tagName     the tag name of certificate to find. May be null.
-     * @param name        the name of certificate to find. May be part of the name or null.
-     * @param description the description of certificate to find. May be part of the description to find or null.
-     * @param sort        the {@code SortType} which describes the order of objects in result list.
-     * @param order       the {@code OrderType} which may be either ASC or DESC.
-     * @return the list of {@code CertificateDto}'s that satisfies the query.
-     */
-    List<CertificateDto> findAll(String tagName, String name, String description, SortType sort, OrderType order);
+    List<CertificateDto> findAll(CertificatesQueryDto certificatesQueryDto);
 
     /**
      * Finds certificate by given id.
@@ -52,6 +44,8 @@ public interface CertificateService {
      * @throws com.epam.esm.exception.EntityNotUpdatedException when entity cannot be updated.
      */
     CertificateDto update(Long updateId, UpdatingCertificateDto replacement);
+
+    CertificateDto updatePrice(Long updateId, Double newPrice);
 
     /**
      * Deletes certificate by its id.

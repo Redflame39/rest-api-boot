@@ -1,8 +1,6 @@
 package com.epam.esm.configuration;
 
-import com.epam.esm.converter.CertificateToCertificateDtoConverter;
-import com.epam.esm.converter.TagDtoToTagConverter;
-import com.epam.esm.converter.TagToTagDtoConverter;
+import com.epam.esm.converter.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
@@ -100,6 +98,10 @@ public class WebConfig implements WebMvcConfigurer {
         converters.add(new CertificateToCertificateDtoConverter());
         converters.add(new TagDtoToTagConverter());
         converters.add(new TagToTagDtoConverter());
+        converters.add(new UpdatingCertificateDtoToCertificateConverter());
+        converters.add(new UserToUserDtoConverter());
+        converters.add(new UpdatingUserDtoToUserConverter());
+        converters.add(new OrderToOrderDtoConverter());
         conversionServiceFactoryBean.setConverters(converters);
         conversionServiceFactoryBean.afterPropertiesSet();
         return conversionServiceFactoryBean;
@@ -110,6 +112,10 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addConverter(new CertificateToCertificateDtoConverter());
         registry.addConverter(new TagDtoToTagConverter());
         registry.addConverter(new TagToTagDtoConverter());
+        registry.addConverter(new UpdatingCertificateDtoToCertificateConverter());
+        registry.addConverter(new UpdatingUserDtoToUserConverter());
+        registry.addConverter(new UserToUserDtoConverter());
+        registry.addConverter(new OrderToOrderDtoConverter());
     }
 
     @InitBinder

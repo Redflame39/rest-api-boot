@@ -1,12 +1,12 @@
 package com.epam.esm.model.entity;
 
 import com.epam.esm.repository.CertificateColumnName;
-import com.epam.esm.repository.CertificateTagColumnName;
 import com.epam.esm.repository.TableName;
 import lombok.*;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.HashSet;
 import java.util.Set;
 
 @NoArgsConstructor
@@ -51,14 +51,23 @@ public class Certificate {
     @Setter
     private Timestamp lastUpdateDate;
 
-    @ManyToMany(fetch = FetchType.LAZY,
+    @ManyToMany(fetch = FetchType.EAGER,
             cascade = CascadeType.ALL)
-    @JoinTable(name = TableName.TABLE_CERTIFICATE_TAG,
-            joinColumns = @JoinColumn(name = CertificateTagColumnName.CERTIFICATE_ID),
-            inverseJoinColumns = @JoinColumn(name = CertificateTagColumnName.TAG_ID))
+    @JoinTable(name = "certificate_tags",
+            joinColumns = @JoinColumn(name = "certificate_id"),
+            inverseJoinColumns = @JoinColumn(name = "tag_id"))
     @Getter
     @Setter
-    private Set<Tag> tags;
+    private Set<Tag> tags = new HashSet<>();
+
+    @ManyToOne(fetch = FetchType.EAGER,
+            cascade = CascadeType.ALL)
+    @JoinTable(name = "certificates_orders",
+            joinColumns = @JoinColumn(name = "certificate_id"),
+            inverseJoinColumns = @JoinColumn(name = "order_id"))
+    @Getter
+    @Setter
+    private Order order;
 
     @Override
     public boolean equals(Object o) {
@@ -75,7 +84,8 @@ public class Certificate {
         if (createDate != null ? !createDate.equals(that.createDate) : that.createDate != null) return false;
         if (lastUpdateDate != null ? !lastUpdateDate.equals(that.lastUpdateDate) : that.lastUpdateDate != null)
             return false;
-        return tags != null ? tags.equals(that.tags) : that.tags == null;
+        if (tags != null ? !tags.equals(that.tags) : that.tags != null) return false;
+        return order != null ? order.equals(that.order) : that.order == null;
     }
 
     @Override
@@ -88,6 +98,7 @@ public class Certificate {
         result = 31 * result + (createDate != null ? createDate.hashCode() : 0);
         result = 31 * result + (lastUpdateDate != null ? lastUpdateDate.hashCode() : 0);
         result = 31 * result + (tags != null ? tags.hashCode() : 0);
+        result = 31 * result + (order != null ? order.hashCode() : 0);
         return result;
     }
 
@@ -101,6 +112,8 @@ public class Certificate {
         sb.append(", description='").append(description).append('\'');
         sb.append(", createDate=").append(createDate);
         sb.append(", lastUpdateDate=").append(lastUpdateDate);
+        sb.append(", tags=").append(tags);
+        sb.append(", order=").append(order);
         sb.append('}');
         return sb.toString();
     }

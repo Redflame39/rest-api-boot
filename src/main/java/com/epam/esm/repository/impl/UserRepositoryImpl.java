@@ -1,6 +1,6 @@
 package com.epam.esm.repository.impl;
 
-import com.epam.esm.model.dto.CreatingUserDto;
+import com.epam.esm.model.dto.UpdatingUserDto;
 import com.epam.esm.model.entity.User;
 import com.epam.esm.repository.api.UserRepository;
 import org.springframework.stereotype.Repository;
@@ -32,13 +32,8 @@ public class UserRepositoryImpl implements UserRepository<Long> {
 
     @Override
     @Transactional
-    public User create(CreatingUserDto dto) {
+    public User create(User user) {
         Timestamp currentTime = Timestamp.valueOf(ZonedDateTime.now().toLocalDateTime());
-        User user = new User();
-        user.setEmail(dto.getEmail());
-        user.setPassword(dto.getPassword());
-        user.setFirstName(dto.getFirstName());
-        user.setLastName(dto.getLastName());
         user.setCreateDate(currentTime);
         user.setLastUpdateDate(currentTime);
         entityManager.persist(user);
@@ -47,13 +42,15 @@ public class UserRepositoryImpl implements UserRepository<Long> {
 
     @Override
     @Transactional
-    public User update(Long updateId, CreatingUserDto dto) { // FIXME check null fields in dto
+    public User update(Long updateId, User dto) {
         User user = entityManager.find(User.class, updateId);
         entityManager.detach(user);
+        Timestamp currentTime = Timestamp.valueOf(ZonedDateTime.now().toLocalDateTime());
         user.setEmail(dto.getEmail());
         user.setPassword(dto.getPassword());
         user.setFirstName(dto.getFirstName());
         user.setLastName(dto.getLastName());
+        user.setLastUpdateDate(currentTime);
         entityManager.merge(user);
         return user;
     }

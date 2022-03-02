@@ -1,24 +1,22 @@
 package com.epam.esm.repository.specification;
 
-import com.epam.esm.repository.CertificateColumnName;
-import com.epam.esm.repository.Specification;
-import com.epam.esm.repository.TableName;
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import com.epam.esm.model.entity.Certificate;
+import com.epam.esm.repository.CriteriaSpecification;
+import lombok.RequiredArgsConstructor;
 
-@Data
-@AllArgsConstructor
-public class CertificatesByDescriptionPartSpecification implements Specification {
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 
-    String descriptionPart;
+@RequiredArgsConstructor
+public class CertificatesByDescriptionPartSpecification implements CriteriaSpecification<Certificate> {
 
-    @Override
-    public String getQuery() {
-        return String.format("and %s.%s like ?", TableName.TABLE_CERTIFICATES, CertificateColumnName.DESCRIPTION);
-    }
+    private final String descriptionPart;
 
     @Override
-    public Object[] getQueryParams() {
-        return new Object[]{String.format("%%%s%%", descriptionPart)};
+    public Predicate toPredicate(Root<Certificate> root, CriteriaBuilder criteriaBuilder) {
+        String formattedDescriptionPart = String.format("%%%s%%", descriptionPart);
+        return criteriaBuilder.like(root.get("description"), formattedDescriptionPart);
     }
+
 }

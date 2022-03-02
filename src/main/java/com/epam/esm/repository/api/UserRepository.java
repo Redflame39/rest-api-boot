@@ -1,6 +1,6 @@
 package com.epam.esm.repository.api;
 
-import com.epam.esm.model.dto.CreatingUserDto;
+import com.epam.esm.model.dto.UpdatingUserDto;
 import com.epam.esm.model.entity.User;
 
 import java.util.List;
@@ -12,9 +12,9 @@ public interface UserRepository<K> {
 
     Optional<User> findById(K id);
 
-    User create(CreatingUserDto dto);
+    User create(User user);
 
-    User update(K updateId, CreatingUserDto dto);
+    User update(K updateId, User dto);
 
     User delete(K deleteId);
 

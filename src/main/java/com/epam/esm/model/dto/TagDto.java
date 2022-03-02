@@ -4,8 +4,8 @@ import com.epam.esm.converter.TagDtoToTagConverter;
 import com.epam.esm.model.entity.Tag;
 import lombok.*;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @Builder
@@ -19,9 +19,9 @@ public class TagDto {
 
     String name;
 
-    public static Set<Tag> toTagSet(Set<TagDto> tagDtos) {
+    public static List<Tag> toTagList(List<TagDto> tagDtos) {
         TagDtoToTagConverter converter = new TagDtoToTagConverter();
-        Set<Tag> tags = new HashSet<>();
+        List<Tag> tags = new ArrayList<>();
         for (TagDto tagDto : tagDtos) {
             Tag tag = converter.convert(tagDto);
             tags.add(tag);

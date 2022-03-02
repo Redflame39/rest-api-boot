@@ -1,7 +1,6 @@
 package com.epam.esm.repository.impl;
 
 import com.epam.esm.model.entity.Certificate;
-import com.epam.esm.model.entity.User;
 import com.epam.esm.repository.CertificateColumnName;
 import com.epam.esm.repository.TableName;
 import com.epam.esm.repository.api.TagRepository;
@@ -11,6 +10,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -32,14 +32,18 @@ public class TagRepositoryImpl implements TagRepository<Long> {
 
     @Override
     public Optional<Tag> findById(Long id) {
-        return Optional.of(entityManager.find(Tag.class, id));
+        return Optional.ofNullable(entityManager.find(Tag.class, id));
     }
 
     @Override
     public Optional<Tag> findByName(String name) {
         TypedQuery<Tag> byNameQuery = entityManager.createQuery("from Tag where name = ?1", Tag.class);
         byNameQuery.setParameter(1, name);
-        return Optional.of(byNameQuery.getSingleResult());
+        try {
+            return Optional.of(byNameQuery.getSingleResult());
+        } catch (NoResultException e) {
+            return Optional.empty();
+        }
     }
 
     @Override
@@ -58,11 +62,12 @@ public class TagRepositoryImpl implements TagRepository<Long> {
     public Tag create(TagDto tag) {
         Tag newTag = new Tag();
         newTag.setName(tag.getName());
-        entityManager.persist(tag);
+        entityManager.persist(newTag);
         return newTag;
     }
 
     @Override
+    @Transactional
     public Tag delete(Long deleteId) {
         Tag tag = entityManager.find(Tag.class, deleteId);
         entityManager.remove(tag);
