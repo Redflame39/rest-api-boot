@@ -3,9 +3,6 @@ package com.epam.esm.service.api;
 import com.epam.esm.model.dto.CertificateDto;
 import com.epam.esm.model.dto.CertificatesQueryDto;
 import com.epam.esm.model.dto.UpdatingCertificateDto;
-import com.epam.esm.model.entity.Certificate;
-import com.epam.esm.model.entity.OrderType;
-import com.epam.esm.model.entity.SortType;
 
 import java.util.List;
 
@@ -23,7 +20,7 @@ public interface CertificateService {
      */
     CertificateDto create(UpdatingCertificateDto certificate);
 
-    List<CertificateDto> findAll(CertificatesQueryDto certificatesQueryDto);
+    List<CertificateDto> findAll(CertificatesQueryDto certificatesQueryDto, Integer pageNum, Integer pageSize);
 
     /**
      * Finds certificate by given id.

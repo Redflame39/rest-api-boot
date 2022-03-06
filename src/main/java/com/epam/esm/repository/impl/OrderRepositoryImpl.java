@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 import java.sql.Timestamp;
 import java.time.ZonedDateTime;
 import java.util.List;
@@ -22,8 +23,11 @@ public class OrderRepositoryImpl implements OrderRepository<Long> {
     private EntityManager entityManager;
 
     @Override
-    public List<Order> findAll() {
-        return entityManager.createQuery("from Order", Order.class).getResultList();
+    public List<Order> findAll(Integer pageNum, Integer pageSize) {
+        TypedQuery<Order> query = entityManager.createQuery("from Order", Order.class);
+        query.setFirstResult((pageNum - 1) * pageSize);
+        query.setMaxResults(pageSize);
+        return query.getResultList();
     }
 
     @Override
@@ -37,6 +41,7 @@ public class OrderRepositoryImpl implements OrderRepository<Long> {
         Timestamp currentTime = Timestamp.valueOf(ZonedDateTime.now().toLocalDateTime());
         order.setCreateDate(currentTime);
         entityManager.persist(order);
+        entityManager.flush();
         return order;
     }
 }

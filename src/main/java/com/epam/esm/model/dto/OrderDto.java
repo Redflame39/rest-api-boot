@@ -3,6 +3,7 @@ package com.epam.esm.model.dto;
 import com.epam.esm.converter.OrderToOrderDtoConverter;
 import com.epam.esm.model.entity.Order;
 import lombok.*;
+import org.springframework.hateoas.RepresentationModel;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -11,7 +12,7 @@ import java.util.stream.Collectors;
 @EqualsAndHashCode
 @ToString
 @NoArgsConstructor
-public class OrderDto {
+public class OrderDto extends RepresentationModel<OrderDto> {
 
     Long id;
 

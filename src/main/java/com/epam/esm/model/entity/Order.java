@@ -4,7 +4,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
-import java.util.Set;
+import java.util.*;
 
 @NoArgsConstructor
 @Entity
@@ -28,16 +28,19 @@ public class Order {
     @Setter
     private Timestamp createDate;
 
-    @OneToMany(mappedBy = "order")
-    @Getter
-    @Setter
-    private Set<Certificate> certificates;
-
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id", nullable = false)
     @Getter
     @Setter
     private User user;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "certificates_orders",
+            joinColumns = @JoinColumn(name = "order_id"),
+            inverseJoinColumns = @JoinColumn(name = "certificate_id"))
+    @Getter
+    @Setter
+    private Set<Certificate> certificates;
 
     @Override
     public boolean equals(Object o) {

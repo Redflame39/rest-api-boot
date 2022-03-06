@@ -1,11 +1,9 @@
 package com.epam.esm.repository.api;
 
-import com.epam.esm.repository.TagColumnName;
 import com.epam.esm.model.dto.TagDto;
 import com.epam.esm.model.entity.Tag;
-import org.springframework.jdbc.core.RowMapper;
+import com.epam.esm.repository.NativeSpecification;
 
-import java.sql.ResultSet;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,7 +19,7 @@ public interface TagRepository<K> {
      *
      * @return the list of all tags.
      */
-    List<Tag> findAll();
+    List<Tag> findAll(Integer pageNum, Integer pageSize);
 
     /**
      * Finds tag by its id.
@@ -62,5 +60,7 @@ public interface TagRepository<K> {
      * @return the list of certificate tags.
      */
     List<Tag> findByCertificateId(K id);
+
+    List<Tag> findByNativeSpecification(NativeSpecification specification);
 
 }

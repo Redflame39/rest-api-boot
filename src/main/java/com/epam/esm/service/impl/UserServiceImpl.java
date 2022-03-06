@@ -21,8 +21,8 @@ public class UserServiceImpl implements UserService {
     private final UserRepository<Long> userRepository;
 
     @Override
-    public List<UserDto> findAll() {
-        List<User> users = userRepository.findAll();
+    public List<UserDto> findAll(Integer pageNum, Integer pageSize) {
+        List<User> users = userRepository.findAll(pageNum, pageSize);
         return UserDto.toUserDtoList(users);
     }
 

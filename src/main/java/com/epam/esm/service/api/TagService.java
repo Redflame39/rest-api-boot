@@ -23,7 +23,7 @@ public interface TagService {
      *
      * @return the list of all tags.
      */
-    List<TagDto> findAll();
+    List<TagDto> findAll(Integer pageNum, Integer pageSize);
 
     /**
      * Find all tags of certificate by its id.
@@ -50,5 +50,7 @@ public interface TagService {
      * @throws com.epam.esm.exception.EntityNotUpdatedException when tag cannot be deleted.
      */
     TagDto delete(Long deleteId);
+
+    List<TagDto> findMostUsedUserTag(Long userId);
 
 }

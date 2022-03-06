@@ -24,12 +24,12 @@ public class SpecificationCreator {
             var certificatesByTagsSpecification = new CertificatesBySeveralTagsSpecification(TagDto.toTagList(tags));
             certificatesSpecifications.add(certificatesByTagsSpecification);
         }
-        String namePart = certificatesQueryDto.getNamePart();
+        String namePart = certificatesQueryDto.getName();
         if (namePart != null && !namePart.trim().isEmpty()) {
             var certificatesByNamePartSpecification = new CertificatesByNamePartSpecification(namePart);
             certificatesSpecifications.add(certificatesByNamePartSpecification);
         }
-        String descriptionPart = certificatesQueryDto.getDescriptionPart();
+        String descriptionPart = certificatesQueryDto.getDescription();
         if (descriptionPart != null && !descriptionPart.trim().isEmpty()) {
             var certificatesByDescriptionPartSpecification = new CertificatesByDescriptionPartSpecification(descriptionPart);
             certificatesSpecifications.add(certificatesByDescriptionPartSpecification);

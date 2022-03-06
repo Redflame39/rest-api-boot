@@ -28,13 +28,15 @@ public class CertificateRepositoryImpl implements CertificateRepository<Long> {
     private EntityManager entityManager;
 
     @Override
-    public List<Certificate> findAll(CriteriaSpecification<Certificate> criteriaSpecification) {
+    public List<Certificate> findAll(CriteriaSpecification<Certificate> criteriaSpecification, Integer pageNum, Integer pageSize) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Certificate> criteriaQuery = criteriaBuilder.createQuery(Certificate.class);
         Root<Certificate> root = criteriaQuery.from(Certificate.class);
         Predicate selectPredicate = criteriaSpecification.toPredicate(root, criteriaBuilder);
         criteriaQuery.select(root).where(selectPredicate);
         TypedQuery<Certificate> query = entityManager.createQuery(criteriaQuery);
+        query.setFirstResult((pageNum - 1) * pageSize);
+        query.setMaxResults(pageSize);
         return query.getResultList();
     }
 

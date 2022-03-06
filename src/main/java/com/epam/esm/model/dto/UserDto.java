@@ -3,15 +3,16 @@ package com.epam.esm.model.dto;
 import com.epam.esm.converter.UserToUserDtoConverter;
 import com.epam.esm.model.entity.User;
 import lombok.*;
+import org.springframework.hateoas.RepresentationModel;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Data
 @NoArgsConstructor
-@EqualsAndHashCode
+@EqualsAndHashCode(callSuper = false)
 @ToString
-public class UserDto {
+public class UserDto extends RepresentationModel<UserDto> {
 
     Long id;
 

@@ -13,7 +13,7 @@ import java.util.Optional;
  */
 public interface CertificateRepository<K> {
 
-    List<Certificate> findAll(CriteriaSpecification<Certificate> criteriaSpecification);
+    List<Certificate> findAll(CriteriaSpecification<Certificate> criteriaSpecification, Integer pageNum, Integer pageSize);
 
     /**
      * Finds certificate by its id.

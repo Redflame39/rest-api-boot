@@ -1,9 +1,11 @@
 package com.epam.esm.service.impl;
 
+import com.epam.esm.repository.NativeSpecification;
 import com.epam.esm.repository.api.TagRepository;
 import com.epam.esm.exception.EntityNotFoundException;
 import com.epam.esm.model.dto.TagDto;
 import com.epam.esm.model.entity.Tag;
+import com.epam.esm.repository.specification.MostWidelyUsedUserTagSpecification;
 import com.epam.esm.service.api.TagService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,21 +30,15 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public List<TagDto> findAll() {
-        List<Tag> tags = repository.findAll();
-        //return conversionService.convert(tags, TagDto.class);
-        return tags.stream()
-                .map(t -> conversionService.convert(t, TagDto.class))
-                .collect(Collectors.toList());
+    public List<TagDto> findAll(Integer pageNum, Integer pageSize) {
+        List<Tag> tags = repository.findAll(pageNum, pageSize);
+        return TagDto.toTagDtoList(tags);
     }
 
     @Override
     public List<TagDto> findByCertificateId(Long id) {
         List<Tag> tags = repository.findByCertificateId(id);
-        //return conversionService.convert(tags, TagDto.class);
-        return tags.stream()
-                .map(t -> conversionService.convert(t, TagDto.class))
-                .collect(Collectors.toList());
+        return TagDto.toTagDtoList(tags);
     }
 
     @Override
@@ -57,5 +53,12 @@ public class TagServiceImpl implements TagService {
     public TagDto delete(Long deleteId) {
         Tag deletedTag = repository.delete(deleteId);
         return conversionService.convert(deletedTag, TagDto.class);
+    }
+
+    @Override
+    public List<TagDto> findMostUsedUserTag(Long userId) {
+        NativeSpecification specification = new MostWidelyUsedUserTagSpecification(userId);
+        List<Tag> tags = repository.findByNativeSpecification(specification);
+        return TagDto.toTagDtoList(tags);
     }
 }

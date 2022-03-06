@@ -1,7 +1,5 @@
 package com.epam.esm.model.entity;
 
-import com.epam.esm.repository.TableName;
-import com.epam.esm.repository.TagColumnName;
 import lombok.*;
 
 import javax.persistence.*;
@@ -10,7 +8,7 @@ import java.util.Set;
 
 @NoArgsConstructor
 @Entity
-@Table(name = TableName.TABLE_TAGS)
+@Table(name = "tag")
 public class Tag {
 
     @Id
@@ -19,7 +17,7 @@ public class Tag {
     @Setter
     private Long id;
 
-    @Column(name = TagColumnName.NAME)
+    @Column(name = "name")
     @Getter
     @Setter
     private String name;

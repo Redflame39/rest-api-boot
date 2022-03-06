@@ -35,9 +35,9 @@ public class CertificateServiceImpl implements CertificateService {
     private final SpecificationCreator specificationCreator;
 
     @Override
-    public List<CertificateDto> findAll(CertificatesQueryDto certificatesQueryDto) {
+    public List<CertificateDto> findAll(CertificatesQueryDto certificatesQueryDto, Integer pageNum, Integer pageSize) {
         var specification = specificationCreator.createCertificateSpecification(certificatesQueryDto);
-        List<Certificate> certificates = certificateRepository.findAll(specification);
+        List<Certificate> certificates = certificateRepository.findAll(specification, pageNum, pageSize);
         return certificates.stream()
                 .map(c -> conversionService.convert(c, CertificateDto.class))
                 .collect(Collectors.toList());

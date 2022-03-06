@@ -1,7 +1,5 @@
 package com.epam.esm.model.entity;
 
-import com.epam.esm.repository.CertificateColumnName;
-import com.epam.esm.repository.TableName;
 import lombok.*;
 
 import javax.persistence.*;
@@ -11,42 +9,42 @@ import java.util.Set;
 
 @NoArgsConstructor
 @Entity
-@Table(name = TableName.TABLE_CERTIFICATES)
+@Table(name = "gift_certificate")
 public class Certificate {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = CertificateColumnName.ID)
+    @Column(name = "id")
     @Getter
     @Setter
     private Long id;
 
-    @Column(name = CertificateColumnName.PRICE)
+    @Column(name = "price")
     @Getter
     @Setter
     private Double price;
 
-    @Column(name = CertificateColumnName.DURATION)
+    @Column(name = "duration")
     @Getter
     @Setter
     private Integer duration;
 
-    @Column(name = CertificateColumnName.NAME)
+    @Column(name = "name")
     @Getter
     @Setter
     private String name;
 
-    @Column(name = CertificateColumnName.DESCRIPTION)
+    @Column(name = "description")
     @Getter
     @Setter
     private String description;
 
-    @Column(name = CertificateColumnName.CREATE_DATE)
+    @Column(name = "create_date")
     @Getter
     @Setter
     private Timestamp createDate;
 
-    @Column(name = CertificateColumnName.LAST_UPDATE_DATE)
+    @Column(name = "last_update_date")
     @Getter
     @Setter
     private Timestamp lastUpdateDate;
@@ -60,14 +58,10 @@ public class Certificate {
     @Setter
     private Set<Tag> tags = new HashSet<>();
 
-    @ManyToOne(fetch = FetchType.EAGER,
-            cascade = CascadeType.ALL)
-    @JoinTable(name = "certificates_orders",
-            joinColumns = @JoinColumn(name = "certificate_id"),
-            inverseJoinColumns = @JoinColumn(name = "order_id"))
+    @ManyToMany(mappedBy = "certificates")
     @Getter
     @Setter
-    private Order order;
+    private Set<Order> order;
 
     @Override
     public boolean equals(Object o) {
@@ -97,8 +91,6 @@ public class Certificate {
         result = 31 * result + (description != null ? description.hashCode() : 0);
         result = 31 * result + (createDate != null ? createDate.hashCode() : 0);
         result = 31 * result + (lastUpdateDate != null ? lastUpdateDate.hashCode() : 0);
-        result = 31 * result + (tags != null ? tags.hashCode() : 0);
-        result = 31 * result + (order != null ? order.hashCode() : 0);
         return result;
     }
 

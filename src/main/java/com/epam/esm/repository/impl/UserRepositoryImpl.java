@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 
 import java.sql.Timestamp;
 import java.time.ZonedDateTime;
@@ -21,8 +22,11 @@ public class UserRepositoryImpl implements UserRepository<Long> {
     private EntityManager entityManager;
 
     @Override
-    public List<User> findAll() {
-        return entityManager.createQuery("from User", User.class).getResultList();
+    public List<User> findAll(Integer pageNum, Integer pageSize) {
+        TypedQuery<User> query = entityManager.createQuery("from User", User.class);
+        query.setFirstResult((pageNum - 1) * pageSize);
+        query.setMaxResults(pageSize);
+        return query.getResultList();
     }
 
     @Override

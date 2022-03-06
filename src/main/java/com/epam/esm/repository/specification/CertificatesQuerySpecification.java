@@ -17,6 +17,7 @@ public class CertificatesQuerySpecification implements CriteriaSpecification<Cer
 
     @Override
     public Predicate toPredicate(Root<Certificate> root, CriteriaBuilder criteriaBuilder) {
+
         List<Predicate> predicatesOfSpecifications = criteriaSpecifications.stream()
                 .map(s -> s.toPredicate(root, criteriaBuilder))
                 .collect(Collectors.toList());
