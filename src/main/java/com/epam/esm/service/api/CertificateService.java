@@ -20,6 +20,15 @@ public interface CertificateService {
      */
     CertificateDto create(UpdatingCertificateDto certificate);
 
+
+    /**
+     * Find all certificates by specified query criteria.
+     *
+     * @param certificatesQueryDto query criteria
+     * @param pageNum              number of page to return
+     * @param pageSize             count of certificates on the page
+     * @return list of {@code CertificateDto}
+     */
     List<CertificateDto> findAll(CertificatesQueryDto certificatesQueryDto, Integer pageNum, Integer pageSize);
 
     /**
@@ -42,6 +51,13 @@ public interface CertificateService {
      */
     CertificateDto update(Long updateId, UpdatingCertificateDto replacement);
 
+    /**
+     * Update price of specified gift certificate
+     *
+     * @param updateId the id of certificate to be updated
+     * @param newPrice the new price of certificate
+     * @return updated certificate dto
+     */
     CertificateDto updatePrice(Long updateId, Double newPrice);
 
     /**

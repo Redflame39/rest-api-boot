@@ -17,6 +17,8 @@ public interface TagRepository<K> {
     /**
      * Finds all tags.
      *
+     * @param pageNum  the page num
+     * @param pageSize the page size
      * @return the list of all tags.
      */
     List<Tag> findAll(Integer pageNum, Integer pageSize);
@@ -61,6 +63,12 @@ public interface TagRepository<K> {
      */
     List<Tag> findByCertificateId(K id);
 
+    /**
+     * Find by native specification list.
+     *
+     * @param specification the specification
+     * @return the list
+     */
     List<Tag> findByNativeSpecification(NativeSpecification specification);
 
 }

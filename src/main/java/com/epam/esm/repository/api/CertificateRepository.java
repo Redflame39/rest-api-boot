@@ -13,6 +13,14 @@ import java.util.Optional;
  */
 public interface CertificateRepository<K> {
 
+    /**
+     * Find all list.
+     *
+     * @param criteriaSpecification the criteria specification
+     * @param pageNum               the page num
+     * @param pageSize              the page size
+     * @return the list
+     */
     List<Certificate> findAll(CriteriaSpecification<Certificate> criteriaSpecification, Integer pageNum, Integer pageSize);
 
     /**
@@ -40,6 +48,13 @@ public interface CertificateRepository<K> {
      */
     Certificate update(K updateId, Certificate replacement);
 
+    /**
+     * Update price of certificate by id.
+     *
+     * @param updateId id of certificate to update
+     * @param price    new certificate price
+     * @return updated certificate
+     */
     Certificate updatePrice(K updateId, Double price);
 
     /**

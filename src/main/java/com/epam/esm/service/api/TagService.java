@@ -18,10 +18,13 @@ public interface TagService {
      */
     TagDto create(TagDto tag);
 
+
     /**
-     * Finds all tags.
+     * Find all tags. Supports pagination
      *
-     * @return the list of all tags.
+     * @param pageNum  the number of page
+     * @param pageSize the size of page
+     * @return list of tags found
      */
     List<TagDto> findAll(Integer pageNum, Integer pageSize);
 
@@ -51,6 +54,12 @@ public interface TagService {
      */
     TagDto delete(Long deleteId);
 
+    /**
+     * Find most used user tag list.
+     *
+     * @param userId the user id
+     * @return the list of most used user tags
+     */
     List<TagDto> findMostUsedUserTag(Long userId);
 
 }
