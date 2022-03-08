@@ -26,20 +26,25 @@ public class CertificateToCertificateDtoConverter implements Converter<Certifica
                 .map(tagDtoConverter::convert)
                 .collect(Collectors.toList())
                 : Collections.emptyList();
-        LocalDateTime createLocalDateTime = source.getCreateDate().toLocalDateTime();
-        LocalDateTime updateLocalDateTime = source.getLastUpdateDate().toLocalDateTime();
-        String createDate = createLocalDateTime.format(FORMATTER);
-        String updateDate = updateLocalDateTime.format(FORMATTER);
-        return CertificateDto.builder()
+        CertificateDto dto = CertificateDto.builder()
                 .id(source.getId())
                 .name(source.getName())
                 .description(source.getDescription())
                 .price(source.getPrice())
                 .duration(source.getDuration())
-                .createDate(createDate)
-                .lastUpdateDate(updateDate)
                 .tags(tagDtos)
                 .build();
+        if (source.getCreateDate() != null) {
+            LocalDateTime createLocalDateTime = source.getCreateDate().toLocalDateTime();
+            String createDate = createLocalDateTime.format(FORMATTER);
+            dto.setCreateDate(createDate);
+        }
+        if (source.getLastUpdateDate() != null) {
+            LocalDateTime updateLocalDateTime = source.getLastUpdateDate().toLocalDateTime();
+            String updateDate = updateLocalDateTime.format(FORMATTER);
+            dto.setLastUpdateDate(updateDate);
+        }
+        return dto;
     }
 
 }

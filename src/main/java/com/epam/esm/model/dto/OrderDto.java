@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Data
-@EqualsAndHashCode
+@EqualsAndHashCode(callSuper = false)
 @ToString
 @NoArgsConstructor
 public class OrderDto extends RepresentationModel<OrderDto> {

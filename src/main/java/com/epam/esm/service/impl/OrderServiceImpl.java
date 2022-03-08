@@ -38,7 +38,8 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public OrderDto findById(Long id) {
         Optional<Order> order = orderRepository.findById(id);
-        return conversionService.convert(order, OrderDto.class);
+        Order item = order.orElseThrow(() -> new EntityNotFoundException("Failed to find order with id " + id));
+        return conversionService.convert(item, OrderDto.class);
     }
 
     @Override
@@ -49,6 +50,15 @@ public class OrderServiceImpl implements OrderService {
         User userItem = user.orElseThrow(
                 () -> new EntityNotFoundException("Cannot find user to create order, user id: " + userId));
         order.setUser(userItem);
+        Set<Certificate> orderedCertificates = loadCertificates(certificatesIds);
+        order.setCertificates(orderedCertificates);
+        Double price = calculatePrice(orderedCertificates);
+        order.setPrice(price);
+        Order newOrder = orderRepository.create(order);
+        return conversionService.convert(newOrder, OrderDto.class);
+    }
+
+    private Set<Certificate> loadCertificates(List<Long> certificatesIds) {
         Set<Certificate> orderedCertificates = new HashSet<>();
         for (Long certificateId : certificatesIds) {
             Optional<Certificate> certificate = certificateRepository.findById(certificateId);
@@ -56,12 +66,12 @@ public class OrderServiceImpl implements OrderService {
                     () -> new EntityNotFoundException("Cannot find ordered certificate, id: " + certificateId));
             orderedCertificates.add(certificateItem);
         }
-        order.setCertificates(orderedCertificates);
-        Double price = orderedCertificates.stream()
+        return orderedCertificates;
+    }
+
+    private Double calculatePrice(Collection<Certificate> certificates) {
+        return certificates.stream()
                 .mapToDouble(Certificate::getPrice)
                 .sum();
-        order.setPrice(price);
-        Order newOrder = orderRepository.create(order);
-        return conversionService.convert(newOrder, OrderDto.class);
     }
 }

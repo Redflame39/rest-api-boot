@@ -23,14 +23,6 @@ public class OrderRepositoryImpl implements OrderRepository<Long> {
     private EntityManager entityManager;
 
     @Override
-    public List<Order> findAll(Integer pageNum, Integer pageSize) {
-        TypedQuery<Order> query = entityManager.createQuery("from Order", Order.class);
-        query.setFirstResult((pageNum - 1) * pageSize);
-        query.setMaxResults(pageSize);
-        return query.getResultList();
-    }
-
-    @Override
     public Optional<Order> findById(Long id) {
         return Optional.ofNullable(entityManager.find(Order.class, id));
     }
