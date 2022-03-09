@@ -62,4 +62,11 @@ public interface TagService {
      */
     List<TagDto> findMostUsedUserTag(Long userId);
 
+    /**
+     * Count tags in database.
+     *
+     * @return tags count
+     */
+    Long countTags();
+
 }

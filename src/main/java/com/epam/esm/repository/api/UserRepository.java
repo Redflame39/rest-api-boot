@@ -54,4 +54,11 @@ public interface UserRepository<K> {
      */
     User delete(K deleteId);
 
+    /**
+     * Count users in database.
+     *
+     * @return users count
+     */
+    Long countUsers();
+
 }

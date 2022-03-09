@@ -1,7 +1,6 @@
 package com.epam.esm.service.impl;
 
 import com.epam.esm.exception.EntityNotFoundException;
-import com.epam.esm.model.dto.CreatingOrderDto;
 import com.epam.esm.model.dto.OrderDto;
 import com.epam.esm.model.entity.Certificate;
 import com.epam.esm.model.entity.Order;

@@ -52,4 +52,11 @@ public interface UserService {
      */
     UserDto delete(Long deleteId);
 
+    /**
+     * Count users in database.
+     *
+     * @return users count
+     */
+    Long countUsers();
+
 }

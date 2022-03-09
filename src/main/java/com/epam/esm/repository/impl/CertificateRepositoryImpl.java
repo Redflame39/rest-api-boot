@@ -28,7 +28,8 @@ public class CertificateRepositoryImpl implements CertificateRepository<Long> {
     private EntityManager entityManager;
 
     @Override
-    public List<Certificate> findAll(CriteriaSpecification<Certificate> criteriaSpecification, Integer pageNum, Integer pageSize) {
+    public List<Certificate> findAll(CriteriaSpecification<Certificate> criteriaSpecification, Integer pageNum,
+                                     Integer pageSize) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Certificate> criteriaQuery = criteriaBuilder.createQuery(Certificate.class);
         Root<Certificate> root = criteriaQuery.from(Certificate.class);
@@ -87,5 +88,10 @@ public class CertificateRepositoryImpl implements CertificateRepository<Long> {
         Certificate certificate = entityManager.find(Certificate.class, deleteId);
         entityManager.remove(certificate);
         return certificate;
+    }
+
+    @Override
+    public Long countCertificates() {
+        return (Long) entityManager.createQuery("select count(id) from Certificate").getSingleResult();
     }
 }

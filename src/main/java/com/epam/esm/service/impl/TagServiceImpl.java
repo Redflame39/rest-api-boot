@@ -61,4 +61,9 @@ public class TagServiceImpl implements TagService {
         List<Tag> tags = repository.findByNativeSpecification(specification);
         return TagDto.toTagDtoList(tags);
     }
+
+    @Override
+    public Long countTags() {
+        return repository.countTags();
+    }
 }

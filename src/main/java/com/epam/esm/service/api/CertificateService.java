@@ -69,4 +69,11 @@ public interface CertificateService {
      */
     CertificateDto delete(Long deleteId);
 
+    /**
+     * Count certificates in database.
+     *
+     * @return certificates count
+     */
+    Long countCertificates();
+
 }

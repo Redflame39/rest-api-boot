@@ -97,4 +97,9 @@ public class CertificateServiceImpl implements CertificateService {
         }
         return updatedTags;
     }
+
+    @Override
+    public Long countCertificates() {
+        return certificateRepository.countCertificates();
+    }
 }

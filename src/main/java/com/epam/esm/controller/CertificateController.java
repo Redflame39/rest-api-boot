@@ -27,28 +27,38 @@ public class CertificateController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public CollectionModel<CertificateDto> read(@RequestBody(required = false) // TODO get pages count
-                                                        CertificatesQueryDto certificatesQueryDto,
-                                                @RequestParam(name = "page", required = false, defaultValue = "1")
-                                                @Min(value = 1, message = "Page should be represented as positive number")
-                                                        Integer pageNum,
-                                                @RequestParam(name = "pageSize", required = false, defaultValue = "50")
-                                                @Min(value = 1, message = "Page size should be represented as positive number")
-                                                @Max(value = 100, message = "Page size should not be greater than 100")
-                                                        Integer pageSize) {
+    public CollectionModel<CertificateDto> read(@RequestBody(required = false)
+                    CertificatesQueryDto certificatesQueryDto,
+                @RequestParam(name = "page", required = false, defaultValue = "1")
+                @Min(value = 1, message = "Page size should be represented as positive number")
+                    Integer pageNum,
+                @RequestParam(name = "pageSize", required = false, defaultValue = "50")
+                @Min(value = 1, message = "Page size should be represented as positive number")
+                @Max(value = 100, message = "Page size should not be greater than 100")
+                     Integer pageSize) {
         List<CertificateDto> certificateDtos = certificateService.findAll(certificatesQueryDto, pageNum, pageSize);
+        Long certificatesCount = certificateService.countCertificates();
         for (CertificateDto dto : certificateDtos) {
             Link certificateLink = linkTo(methodOn(CertificateController.class).read(dto.getId())).withSelfRel();
             dto.add(certificateLink);
         }
         List<Link> collectionLinks = new ArrayList<>();
         if (pageNum != 1) {
-            Link prevPageLink = linkTo(methodOn(CertificateController.class).read(certificatesQueryDto, pageNum - 1, pageSize))
+            Link prevPageLink = linkTo(methodOn(CertificateController.class)
+                    .read(certificatesQueryDto, pageNum - 1, pageSize))
                     .withRel("Previous page");
             collectionLinks.add(prevPageLink);
         }
-        Link currentPageLink = linkTo(methodOn(CertificateController.class).read(certificatesQueryDto, pageNum, pageSize))
+        Link currentPageLink = linkTo(methodOn(CertificateController.class)
+                .read(certificatesQueryDto, pageNum, pageSize))
                 .withRel("Current page");
+        boolean isLastPage = (long) pageNum * pageSize >= certificatesCount;
+        if (!isLastPage) {
+            Link nextPageLink = linkTo(methodOn(CertificateController.class)
+                    .read(certificatesQueryDto, pageNum + 1, pageSize))
+                    .withRel("Next page");
+            collectionLinks.add(nextPageLink);
+        }
         collectionLinks.add(currentPageLink);
         return CollectionModel.of(certificateDtos, collectionLinks);
     }
@@ -67,7 +77,9 @@ public class CertificateController {
     public CertificateDto create(@RequestBody UpdatingCertificateDto certificate) {
         CertificateDto dto = certificateService.create(certificate);
         Link self = linkTo(methodOn(CertificateController.class).create(certificate)).withSelfRel();
-        Link toCreatedLink = linkTo(methodOn(CertificateController.class).read(dto.getId())).withRel("Read created");
+        Link toCreatedLink = linkTo(methodOn(CertificateController.class)
+                .read(dto.getId()))
+                .withRel("Read created");
         dto.add(self, toCreatedLink);
         return dto;
     }
@@ -76,8 +88,12 @@ public class CertificateController {
     @ResponseStatus(HttpStatus.OK)
     public CertificateDto update(@PathVariable Long id, @RequestBody UpdatingCertificateDto certificateDto) {
         CertificateDto dto = certificateService.update(id, certificateDto);
-        Link self = linkTo(methodOn(CertificateController.class).update(id, certificateDto)).withSelfRel();
-        Link toUpdatedLink = linkTo(methodOn(CertificateController.class).read(id)).withRel("Read updated");
+        Link self = linkTo(methodOn(CertificateController.class)
+                .update(id, certificateDto))
+                .withSelfRel();
+        Link toUpdatedLink = linkTo(methodOn(CertificateController.class)
+                .read(id))
+                .withRel("Read updated");
         dto.add(self, toUpdatedLink);
         return dto;
     }
@@ -87,7 +103,9 @@ public class CertificateController {
     public CertificateDto updatePrice(@PathVariable Long id, @RequestBody Double price) {
         CertificateDto dto = certificateService.updatePrice(id, price);
         Link self = linkTo(methodOn(CertificateController.class).updatePrice(id, price)).withSelfRel();
-        Link toUpdatedLink = linkTo(methodOn(CertificateController.class).read(id)).withRel("Read updated");
+        Link toUpdatedLink = linkTo(methodOn(CertificateController.class)
+                .read(id))
+                .withRel("Read updated");
         dto.add(self, toUpdatedLink);
         return dto;
     }
@@ -96,8 +114,11 @@ public class CertificateController {
     @ResponseStatus(HttpStatus.OK)
     public CertificateDto delete(@PathVariable Long id) {
         CertificateDto dto = certificateService.delete(id);
-        Link self = linkTo(methodOn(CertificateController.class).delete(id)).withSelfRel();
+        Link self = linkTo(methodOn(CertificateController.class)
+                .delete(id))
+                .withSelfRel();
         dto.add(self);
         return dto;
     }
+
 }

@@ -1,6 +1,5 @@
 package com.epam.esm.repository.impl;
 
-import com.epam.esm.model.dto.UpdatingUserDto;
 import com.epam.esm.model.entity.User;
 import com.epam.esm.repository.api.UserRepository;
 import org.springframework.stereotype.Repository;
@@ -67,4 +66,8 @@ public class UserRepositoryImpl implements UserRepository<Long> {
         return user;
     }
 
+    @Override
+    public Long countUsers() {
+        return (Long) entityManager.createQuery("select count(id) from User").getSingleResult();
+    }
 }

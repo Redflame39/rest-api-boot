@@ -71,4 +71,11 @@ public interface TagRepository<K> {
      */
     List<Tag> findByNativeSpecification(NativeSpecification specification);
 
+    /**
+     * Count tags in database.
+     *
+     * @return tags count
+     */
+    Long countTags();
+
 }

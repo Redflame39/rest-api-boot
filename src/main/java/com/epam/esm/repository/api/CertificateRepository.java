@@ -64,4 +64,11 @@ public interface CertificateRepository<K> {
      * @return true if successfully deleted, else false.
      */
     Certificate delete(K deleteId);
+
+    /**
+     * Count certificates in database.
+     *
+     * @return certificates count
+     */
+    Long countCertificates();
 }

@@ -31,25 +31,37 @@ public class UserController {
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public CollectionModel<UserDto> read(@RequestParam(name = "page", required = false, defaultValue = "1")
-                              @Min(value = 1, message = "Page should be represented as positive number")
-                                      Integer pageNum,
-                              @RequestParam(name = "pageSize", required = false, defaultValue = "50")
-                              @Min(value = 1, message = "Page size should be represented as positive number")
-                              @Max(value = 100, message = "Page size should not be greater than 100")
-                                      Integer pageSize) {
+                @Min(value = 1, message = "Page should be represented as positive number")
+                    Integer pageNum,
+                @RequestParam(name = "pageSize", required = false, defaultValue = "50")
+                @Min(value = 1, message = "Page size should be represented as positive number")
+                @Max(value = 100, message = "Page size should not be greater than 100")
+                    Integer pageSize) {
         List<UserDto> userDtos = userService.findAll(pageNum, pageSize);
+        Long usersCount = userService.countUsers();
         for (UserDto dto : userDtos) {
-            Link certificateLink = linkTo(methodOn(CertificateController.class).read(dto.getId())).withSelfRel();
+            Link certificateLink = linkTo(methodOn(CertificateController.class)
+                    .read(dto.getId()))
+                    .withSelfRel();
             dto.add(certificateLink);
         }
         List<Link> collectionLinks = new ArrayList<>();
         if (pageNum != 1) {
-            Link prevPageLink = linkTo(methodOn(UserController.class).read(pageNum - 1, pageSize))
+            Link prevPageLink = linkTo(methodOn(UserController.class)
+                    .read(pageNum - 1, pageSize))
                     .withRel("Previous page");
             collectionLinks.add(prevPageLink);
         }
-        Link currentPageLink = linkTo(methodOn(UserController.class).read(pageNum, pageSize))
+        Link currentPageLink = linkTo(methodOn(UserController.class)
+                .read(pageNum, pageSize))
                 .withRel("Current page");
+        boolean isLastPage = (long) pageNum * pageSize >= usersCount;
+        if (!isLastPage) {
+            Link nextPageLink = linkTo(methodOn(UserController.class)
+                    .read(pageNum + 1, pageSize))
+                    .withRel("Next page");
+            collectionLinks.add(nextPageLink);
+        }
         collectionLinks.add(currentPageLink);
         return CollectionModel.of(userDtos, collectionLinks);
     }
@@ -58,7 +70,9 @@ public class UserController {
     @ResponseStatus(HttpStatus.OK)
     public UserDto read(@PathVariable Long id) {
         UserDto dto = userService.findById(id);
-        Link self = linkTo(methodOn(UserController.class).read(id)).withSelfRel();
+        Link self = linkTo(methodOn(UserController.class)
+                .read(id))
+                .withSelfRel();
         dto.add(self);
         return dto;
     }
@@ -67,8 +81,12 @@ public class UserController {
     @ResponseStatus(HttpStatus.CREATED)
     public UserDto create(@RequestBody UpdatingUserDto user) {
         UserDto dto = userService.create(user);
-        Link self = linkTo(methodOn(UserController.class).create(user)).withSelfRel();
-        Link toCreatedLink = linkTo(methodOn(UserController.class).read(dto.getId())).withRel("Read created");
+        Link self = linkTo(methodOn(UserController.class)
+                .create(user))
+                .withSelfRel();
+        Link toCreatedLink = linkTo(methodOn(UserController.class)
+                .read(dto.getId()))
+                .withRel("Read created");
         dto.add(self, toCreatedLink);
         return dto;
     }
@@ -77,8 +95,12 @@ public class UserController {
     @ResponseStatus(HttpStatus.CREATED)
     public UserDto update(@PathVariable Long id, @RequestBody UpdatingUserDto user) {
         UserDto dto = userService.update(id, user);
-        Link self = linkTo(methodOn(UserController.class).update(id, user)).withSelfRel();
-        Link toUpdatedLink = linkTo(methodOn(UserController.class).read(dto.getId())).withRel("Read updated");
+        Link self = linkTo(methodOn(UserController.class)
+                .update(id, user))
+                .withSelfRel();
+        Link toUpdatedLink = linkTo(methodOn(UserController.class)
+                .read(dto.getId()))
+                .withRel("Read updated");
         dto.add(self, toUpdatedLink);
         return dto;
     }
@@ -87,7 +109,9 @@ public class UserController {
     @ResponseStatus(HttpStatus.CREATED)
     public UserDto delete(@PathVariable Long id) {
         UserDto dto = userService.delete(id);
-        Link self = linkTo(methodOn(UserController.class).delete(id)).withSelfRel();
+        Link self = linkTo(methodOn(UserController.class)
+                .delete(id))
+                .withSelfRel();
         dto.add(self);
         return dto;
     }
@@ -96,8 +120,12 @@ public class UserController {
     @ResponseStatus(HttpStatus.CREATED)
     public OrderDto createOrder(@PathVariable Long id, @RequestBody List<Long> certificatesIds) {
         OrderDto dto = orderService.create(id, certificatesIds);
-        Link self = linkTo(methodOn(UserController.class).createOrder(id, certificatesIds)).withSelfRel();
-        Link toUserOrders = linkTo(methodOn(UserController.class).readOrders(id)).withRel("Read all user orders");
+        Link self = linkTo(methodOn(UserController.class)
+                .createOrder(id, certificatesIds))
+                .withSelfRel();
+        Link toUserOrders = linkTo(methodOn(UserController.class)
+                .readOrders(id))
+                .withRel("Read all user orders");
         dto.add(self, toUserOrders);
         return dto;
     }
@@ -106,7 +134,9 @@ public class UserController {
     @ResponseStatus(HttpStatus.OK)
     public CollectionModel<OrderDto> readOrders(@PathVariable Long id) {
         List<OrderDto> orderDtos = orderService.findByUserId(id);
-        Link self = linkTo(methodOn(UserController.class).readOrders(id)).withSelfRel();
+        Link self = linkTo(methodOn(UserController.class)
+                .readOrders(id))
+                .withSelfRel();
         return CollectionModel.of(orderDtos, self);
     }
 
@@ -115,10 +145,14 @@ public class UserController {
     public CollectionModel<TagDto> getPopularUserTags(@PathVariable Long userId) {
         List<TagDto> tagDtos = tagService.findMostUsedUserTag(userId);
         for (TagDto dto : tagDtos) {
-            Link self = linkTo(methodOn(TagController.class).read(dto.getId())).withSelfRel();
+            Link self = linkTo(methodOn(TagController.class)
+                    .read(dto.getId()))
+                    .withSelfRel();
             dto.add(self);
         }
-        Link self = linkTo(methodOn(UserController.class).getPopularUserTags(userId)).withSelfRel();
+        Link self = linkTo(methodOn(UserController.class)
+                .getPopularUserTags(userId))
+                .withSelfRel();
         return CollectionModel.of(tagDtos, self);
     }
 

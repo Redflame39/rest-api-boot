@@ -82,4 +82,8 @@ public class TagRepositoryImpl implements TagRepository<Long> {
         return entityManager.createNativeQuery(query, Tag.class).getResultList();
     }
 
+    @Override
+    public Long countTags() {
+        return (Long) entityManager.createQuery("select count(id) from Tag").getSingleResult();
+    }
 }

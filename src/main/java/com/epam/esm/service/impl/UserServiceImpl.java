@@ -52,4 +52,9 @@ public class UserServiceImpl implements UserService {
         User deleted = userRepository.delete(deleteId);
         return conversionService.convert(deleted, UserDto.class);
     }
+
+    @Override
+    public Long countUsers() {
+        return userRepository.countUsers();
+    }
 }

@@ -9,7 +9,6 @@ import org.springframework.context.support.ConversionServiceFactoryBean;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.format.FormatterRegistry;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -64,7 +63,6 @@ public class WebConfig implements WebMvcConfigurer {
     }
 
     @Bean
-    @Scope("singleton")
     public DataSource dataSource() {
         DriverManagerDataSource ds = new DriverManagerDataSource();
         ds.setDriverClassName(driverClassName);
@@ -72,11 +70,6 @@ public class WebConfig implements WebMvcConfigurer {
         ds.setUsername(user);
         ds.setPassword(password);
         return ds;
-    }
-
-    @Bean
-    public JdbcTemplate jdbcTemplate() {
-        return new JdbcTemplate(dataSource());
     }
 
     @Bean
