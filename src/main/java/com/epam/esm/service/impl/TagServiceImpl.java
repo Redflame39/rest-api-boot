@@ -12,9 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
@@ -59,6 +57,9 @@ public class TagServiceImpl implements TagService {
     public List<TagDto> findMostUsedUserTag(Long userId) {
         NativeSpecification specification = new MostWidelyUsedUserTagSpecification(userId);
         List<Tag> tags = repository.findByNativeSpecification(specification);
+        if (tags.stream().allMatch(Objects::isNull)) {
+            return Collections.emptyList();
+        }
         return TagDto.toTagDtoList(tags);
     }
 

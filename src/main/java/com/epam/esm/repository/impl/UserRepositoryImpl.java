@@ -9,8 +9,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
-import java.sql.Timestamp;
-import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,7 +28,7 @@ public class UserRepositoryImpl implements UserRepository<Long> {
 
     @Override
     public Optional<User> findById(Long id) {
-        return Optional.of(entityManager.find(User.class, id));
+        return Optional.ofNullable(entityManager.find(User.class, id));
     }
 
     @Override

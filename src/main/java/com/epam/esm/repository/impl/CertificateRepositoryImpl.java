@@ -1,12 +1,8 @@
 package com.epam.esm.repository.impl;
 
-import com.epam.esm.model.entity.Tag;
 import com.epam.esm.repository.CriteriaSpecification;
 import com.epam.esm.repository.api.CertificateRepository;
 import com.epam.esm.model.entity.Certificate;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,8 +13,6 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import java.sql.Timestamp;
-import java.time.ZonedDateTime;
 import java.util.*;
 
 @Repository

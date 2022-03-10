@@ -31,8 +31,11 @@ public class CertificateServiceImpl implements CertificateService {
 
     @Override
     public List<CertificateDto> findAll(CertificatesQueryDto certificatesQueryDto, Integer pageNum, Integer pageSize) {
-        List<Tag> tags = new ArrayList<>(loadTagsByName(certificatesQueryDto.getTags()));
-        certificatesQueryDto.setTags(TagDto.toTagDtoList(tags));
+        if (certificatesQueryDto != null) {
+            Set<Tag> tags = loadTagsByName(certificatesQueryDto.getTags());
+            List<Tag> tagList = new ArrayList<>(tags);
+            certificatesQueryDto.setTags(TagDto.toTagDtoList(tagList));
+        }
         var specification = specificationCreator.createCertificateSpecification(certificatesQueryDto);
         List<Certificate> certificates = certificateRepository.findAll(specification, pageNum, pageSize);
         return CertificateDto.toCertificateDtoList(certificates);

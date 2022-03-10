@@ -1,5 +1,6 @@
 package com.epam.esm.service.impl;
 
+import com.epam.esm.exception.EntityNotCreatedException;
 import com.epam.esm.exception.EntityNotFoundException;
 import com.epam.esm.model.dto.OrderDto;
 import com.epam.esm.model.entity.Certificate;
@@ -44,6 +45,9 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     public OrderDto create(Long userId, List<Long> certificatesIds) {
+        if (certificatesIds.isEmpty()) {
+            throw new EntityNotCreatedException("Cannot create order without certificates.");
+        }
         Order order = new Order();
         Optional<User> user = userRepository.findById(userId);
         User userItem = user.orElseThrow(

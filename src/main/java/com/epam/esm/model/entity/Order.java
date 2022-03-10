@@ -31,6 +31,9 @@ public class Order implements AuditableEntity {
     @Setter
     private Timestamp createDate;
 
+    // Attribute is marked as Transient, because it is not present on data model, but required in jpa entity definition
+    // for correct implementing AuditableEntity interface
+    @Transient
     @Getter
     @Setter
     private Timestamp lastUpdateDate;
