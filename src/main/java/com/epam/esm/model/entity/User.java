@@ -1,5 +1,7 @@
 package com.epam.esm.model.entity;
 
+import com.epam.esm.model.audit.AuditableEntity;
+import com.epam.esm.model.audit.EntityListener;
 import lombok.*;
 
 import javax.persistence.*;
@@ -7,9 +9,10 @@ import java.sql.Timestamp;
 import java.util.Set;
 
 @NoArgsConstructor
+@EntityListeners(EntityListener.class)
 @Entity
 @Table(name = "users")
-public class User {
+public class User implements AuditableEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -80,7 +83,6 @@ public class User {
         result = 31 * result + (lastName != null ? lastName.hashCode() : 0);
         result = 31 * result + (createDate != null ? createDate.hashCode() : 0);
         result = 31 * result + (lastUpdateDate != null ? lastUpdateDate.hashCode() : 0);
-        result = 31 * result + (orders != null ? orders.hashCode() : 0);
         return result;
     }
 

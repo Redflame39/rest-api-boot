@@ -49,9 +49,6 @@ public class CertificateRepositoryImpl implements CertificateRepository<Long> {
     @Override
     @Transactional
     public Certificate create(Certificate certificate) {
-        Timestamp currentTime = Timestamp.valueOf(ZonedDateTime.now().toLocalDateTime());
-        certificate.setCreateDate(currentTime);
-        certificate.setLastUpdateDate(currentTime);
         entityManager.persist(certificate);
         return certificate;
     }

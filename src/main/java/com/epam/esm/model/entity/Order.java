@@ -1,5 +1,7 @@
 package com.epam.esm.model.entity;
 
+import com.epam.esm.model.audit.AuditableEntity;
+import com.epam.esm.model.audit.EntityListener;
 import lombok.*;
 
 import javax.persistence.*;
@@ -7,9 +9,10 @@ import java.sql.Timestamp;
 import java.util.*;
 
 @NoArgsConstructor
+@EntityListeners(EntityListener.class)
 @Entity
 @Table(name = "orders")
-public class Order {
+public class Order implements AuditableEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,6 +30,10 @@ public class Order {
     @Getter
     @Setter
     private Timestamp createDate;
+
+    @Getter
+    @Setter
+    private Timestamp lastUpdateDate;
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id", nullable = false)

@@ -1,5 +1,6 @@
 package com.epam.esm.model.entity;
 
+import com.epam.esm.model.audit.AuditableEntity;
 import lombok.*;
 
 import javax.persistence.*;

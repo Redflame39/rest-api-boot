@@ -1,5 +1,7 @@
 package com.epam.esm.model.entity;
 
+import com.epam.esm.model.audit.AuditableEntity;
+import com.epam.esm.model.audit.EntityListener;
 import lombok.*;
 
 import javax.persistence.*;
@@ -8,9 +10,10 @@ import java.util.HashSet;
 import java.util.Set;
 
 @NoArgsConstructor
+@EntityListeners(EntityListener.class)
 @Entity
 @Table(name = "gift_certificate")
-public class Certificate {
+public class Certificate implements AuditableEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

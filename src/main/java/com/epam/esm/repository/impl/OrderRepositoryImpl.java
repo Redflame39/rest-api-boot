@@ -25,8 +25,6 @@ public class OrderRepositoryImpl implements OrderRepository<Long> {
     @Override
     @Transactional
     public Order create(Order order) {
-        Timestamp currentTime = Timestamp.valueOf(ZonedDateTime.now().toLocalDateTime());
-        order.setCreateDate(currentTime);
         entityManager.persist(order);
         entityManager.flush();
         return order;

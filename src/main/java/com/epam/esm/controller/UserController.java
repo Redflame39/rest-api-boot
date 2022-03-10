@@ -116,6 +116,39 @@ public class UserController {
         return dto;
     }
 
+    @GetMapping(value = "/{id}/orders")
+    @ResponseStatus(HttpStatus.OK)
+    public CollectionModel<OrderDto> readOrders(@PathVariable Long id) {
+        List<OrderDto> orderDtos = orderService.findByUserId(id);
+        for (OrderDto orderDto : orderDtos) {
+            Link orderSelf = linkTo(methodOn(UserController.class)
+                    .readOrder(id, orderDto.getId()))
+                    .withSelfRel();
+            orderDto.add(orderSelf);
+            for (CertificateDto certificateDto : orderDto.getCertificates()) {
+                Link certificateSelf = linkTo(methodOn(CertificateController.class)
+                        .read(certificateDto.getId()))
+                        .withSelfRel();
+                certificateDto.add(certificateSelf);
+            }
+        }
+        Link self = linkTo(methodOn(UserController.class)
+                .readOrders(id))
+                .withSelfRel();
+        return CollectionModel.of(orderDtos, self);
+    }
+
+    @GetMapping(value = "{userId}/orders/{orderId}")
+    @ResponseStatus(HttpStatus.OK)
+    public OrderDto readOrder(@PathVariable Long userId, @PathVariable Long orderId) {
+        OrderDto orderDto = orderService.findById(orderId);
+        Link self = linkTo(methodOn(UserController.class)
+                .readOrder(userId, orderId))
+                .withSelfRel();
+        orderDto.add(self);
+        return orderDto;
+    }
+
     @PostMapping(value = "/{id}/orders")
     @ResponseStatus(HttpStatus.CREATED)
     public OrderDto createOrder(@PathVariable Long id, @RequestBody List<Long> certificatesIds) {
@@ -128,16 +161,6 @@ public class UserController {
                 .withRel("Read all user orders");
         dto.add(self, toUserOrders);
         return dto;
-    }
-
-    @GetMapping(value = "/{id}/orders")
-    @ResponseStatus(HttpStatus.OK)
-    public CollectionModel<OrderDto> readOrders(@PathVariable Long id) {
-        List<OrderDto> orderDtos = orderService.findByUserId(id);
-        Link self = linkTo(methodOn(UserController.class)
-                .readOrders(id))
-                .withSelfRel();
-        return CollectionModel.of(orderDtos, self);
     }
 
     @GetMapping(value = "/{userId}/popular_tags")

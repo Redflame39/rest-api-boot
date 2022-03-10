@@ -36,9 +36,6 @@ public class UserRepositoryImpl implements UserRepository<Long> {
     @Override
     @Transactional
     public User create(User user) {
-        Timestamp currentTime = Timestamp.valueOf(ZonedDateTime.now().toLocalDateTime());
-        user.setCreateDate(currentTime);
-        user.setLastUpdateDate(currentTime);
         entityManager.persist(user);
         return user;
     }
@@ -48,12 +45,10 @@ public class UserRepositoryImpl implements UserRepository<Long> {
     public User update(Long updateId, User dto) {
         User user = entityManager.find(User.class, updateId);
         entityManager.detach(user);
-        Timestamp currentTime = Timestamp.valueOf(ZonedDateTime.now().toLocalDateTime());
         user.setEmail(dto.getEmail());
         user.setPassword(dto.getPassword());
         user.setFirstName(dto.getFirstName());
         user.setLastName(dto.getLastName());
-        user.setLastUpdateDate(currentTime);
         entityManager.merge(user);
         return user;
     }

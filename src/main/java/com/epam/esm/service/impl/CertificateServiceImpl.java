@@ -3,7 +3,6 @@ package com.epam.esm.service.impl;
 import com.epam.esm.model.dto.CertificatesQueryDto;
 import com.epam.esm.model.dto.TagDto;
 import com.epam.esm.model.entity.Tag;
-import com.epam.esm.repository.CriteriaSpecification;
 import com.epam.esm.repository.api.CertificateRepository;
 import com.epam.esm.exception.EntityNotFoundException;
 import com.epam.esm.model.dto.CertificateDto;
@@ -19,11 +18,7 @@ import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
@@ -36,18 +31,18 @@ public class CertificateServiceImpl implements CertificateService {
 
     @Override
     public List<CertificateDto> findAll(CertificatesQueryDto certificatesQueryDto, Integer pageNum, Integer pageSize) {
+        List<Tag> tags = new ArrayList<>(loadTagsByName(certificatesQueryDto.getTags()));
+        certificatesQueryDto.setTags(TagDto.toTagDtoList(tags));
         var specification = specificationCreator.createCertificateSpecification(certificatesQueryDto);
         List<Certificate> certificates = certificateRepository.findAll(specification, pageNum, pageSize);
-        return certificates.stream()
-                .map(c -> conversionService.convert(c, CertificateDto.class))
-                .collect(Collectors.toList());
+        return CertificateDto.toCertificateDtoList(certificates);
     }
 
     @Override
     @Transactional
     public CertificateDto create(UpdatingCertificateDto certificate) {
         Certificate entity = conversionService.convert(certificate, Certificate.class);
-        Set<Tag> tags = loadTags(certificate);
+        Set<Tag> tags = loadTagsByName(certificate.getTags());
         entity.setTags(tags);
         Certificate createdCertificate = certificateRepository.create(entity);
         return conversionService.convert(createdCertificate, CertificateDto.class);
@@ -65,7 +60,7 @@ public class CertificateServiceImpl implements CertificateService {
     @Transactional
     public CertificateDto update(Long updateId, UpdatingCertificateDto replacement) {
         Certificate entity = conversionService.convert(replacement, Certificate.class);
-        Set<Tag> tags = loadTags(replacement);
+        Set<Tag> tags = loadTagsByName(replacement.getTags());
         entity.setTags(tags);
         Certificate updatedCertificate = certificateRepository.update(updateId, entity);
         return conversionService.convert(updatedCertificate, CertificateDto.class);
@@ -84,9 +79,9 @@ public class CertificateServiceImpl implements CertificateService {
         return conversionService.convert(deletedCertificate, CertificateDto.class);
     }
 
-    private Set<Tag> loadTags(UpdatingCertificateDto certificate) {
+    private Set<Tag> loadTagsByName(Collection<TagDto> tags) {
         Set<Tag> updatedTags = new HashSet<>();
-        for (TagDto t : certificate.getTags()) {
+        for (TagDto t : tags) {
             Optional<Tag> tagFound = tagRepository.findByName(t.getName());
             if (tagFound.isPresent()) {
                 updatedTags.add(tagFound.get());
